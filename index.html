@@ -8,29 +8,27 @@
 
 <body>
   <div class="parent">
-      <header class="pink section">Header
+      <header class="pink section">
         <form> <fieldset>
             <legend>Enter a Pokemon</legend>
             <input placeholder="pokemon" id="search">
             <br>
-            <p></p>
-            <!-- <select id="selector">
-              <option value="trivia">Trivia</option>
-              <option value="math">Math</option>
-              <option value="date">Date</option>
-              <option value="year">Year</option>
-            </select> -->
-            <p></p>
             <button id="searchButton">search</button>
             </fieldset>
           </form>
       </header>
-      <div class="left-side blue section">Left Sidebar
-          add button
+      <div class="left-side blue section">
+        <form>
+          <p></p>
+          <select id="selector">
+            <option value="info">info</option>
+            <option value="moves">Moves</option>
+          </select>
+          </form>
       </div>
 
-      <div class="right-side yellow section">Right Sidebar
-          pokemon info
+      <div class="right-side yellow section">
+          Pokemon
           <p id="RightSideBar"></p>
       </div>
 
@@ -38,23 +36,6 @@
 
         <p id="Main"></p>
 
-
-        <div class="subParent">
-            <div class="section yellow">
-            Min: 150px / Max: 25%
-            </div>
-            <div class="section purple">
-              This element takes the second grid position (1fr), meaning
-              it takes up the rest of the remaining space.
-            </div>
-            <div class="section">
-            test
-            </div>
-            <div class="section purple">
-              This element takes the second grid position (1fr), meaning
-              it takes up the rest of the remaining space.
-            </div>
-          </div>
 
           <script src="./loadPokemon.js">
            </script>

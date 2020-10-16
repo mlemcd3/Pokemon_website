@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://js.cx/libs/animate.js"></script>
+    <title>I Choose You!</title>
+</head>
+
+<body>
+
+  <div id="pokeButton">
+      <img src="./images/png-clipart-pokeball-pokeball.png">
+      </div>
+      <div id="pokeballButton"></div>
+
+
+
+
+    <!-- <div id="ball">
+    <img src="./images/png-clipart-pokeball-pokeball.png"></div> -->
+
+  <script>
+    pokeballButton.onclick = function() {
+      animate({
+        duration: 1000,
+        timing: function back(x, timeFraction) {
+          return Math.pow(timeFraction, 2) * ((x + 1) * timeFraction - x)
+        }.bind(null, 1.5),
+        draw: function(progress) {
+          pokeballButton.style.left = progress * 500 + 'px';
+          pokeButton.style.left = progress * 500 + 'px';
+        }
+      });
+    };
+  </script>
+
+
+</body>
+
+</html>
