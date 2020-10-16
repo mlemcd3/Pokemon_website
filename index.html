@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+    <link rel="stylesheet" href="./styles.css">
+    <title>Pokemon</title>
+</head>
+
+<body>
+  <div class="parent">
+      <header class="pink section">Header
+        <form> <fieldset>
+            <legend>Enter a Pokemon</legend>
+            <input placeholder="pokemon" id="search">
+            <br>
+            <p></p>
+            <!-- <select id="selector">
+              <option value="trivia">Trivia</option>
+              <option value="math">Math</option>
+              <option value="date">Date</option>
+              <option value="year">Year</option>
+            </select> -->
+            <p></p>
+            <button id="searchButton">search</button>
+            </fieldset>
+          </form>
+      </header>
+      <div class="left-side blue section">Left Sidebar
+          add button
+      </div>
+
+      <div class="right-side yellow section">Right Sidebar
+          pokemon info
+          <p id="RightSideBar"></p>
+      </div>
+
+      <main class="section coral">
+
+        <p id="Main"></p>
+
+
+        <div class="subParent">
+            <div class="section yellow">
+            Min: 150px / Max: 25%
+            </div>
+            <div class="section purple">
+              This element takes the second grid position (1fr), meaning
+              it takes up the rest of the remaining space.
+            </div>
+            <div class="section">
+            test
+            </div>
+            <div class="section purple">
+              This element takes the second grid position (1fr), meaning
+              it takes up the rest of the remaining space.
+            </div>
+          </div>
+
+          <script src="./loadPokemon.js">
+           </script>
+      </main>
+      <footer class="green section">
+        <p><a href="https://github.com/mlemcd3/Pokemon_website">GitHub</a>
+        </footer>
+    </div>
+
+</body>
+
+</html>
