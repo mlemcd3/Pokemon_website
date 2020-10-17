@@ -3,13 +3,9 @@ var backImage = document.createElement("img");
 var shinyFrontImage = document.createElement("img");
 var shinyBackImage = document.createElement("img");
 
-function onClick(e) {
-  e.preventDefault();
-  // get form values
+
+function getAPI(path){
   let pokemon = document.getElementById('search').value;
-  let s = document.getElementById('selector');
-  let type = s.options[s.selectedIndex].value;
-  // check if number is empty
   if (pokemon === "") {
     return;
   }
@@ -26,8 +22,24 @@ let url = "https://pokeapi.co/api/v2/pokemon/" + pokemon + "/";
       }
       return response.json();
     }).then(function(json) {
+      main(json);
+      if(path == "info"){
+        mainInfo(json);
+        loadInfo(json);
+      }
+      if(path == "moves"){
+        mainMoves(json);
+        loadMoves(json);
+      }
+    });
+}
+function main(json) {
+}
+
+function mainInfo(json) {
       // update DOM with response
-      let pageInfo = "<ul>";
+      let pageInfo = "<p id='images'></p>";
+
       pageInfo += "<p id='images'></p>";
 
       frontImage.src = json.sprites.front_default;
@@ -35,59 +47,97 @@ let url = "https://pokeapi.co/api/v2/pokemon/" + pokemon + "/";
       shinyFrontImage.src = json.sprites.front_shiny;
       shinyBackImage.src = json.sprites.back_shiny;
 
-      pageInfo += "<img src='" + frontImage.src + "' onmouseover='rolloverDefault(this)' onmouseout='mouseawayDefault(this)'>";
-      pageInfo += "<img src='" + shinyFrontImage.src + "' onmouseover='rolloverShiny(this)' onmouseout='mouseawayShiny(this)'>";;
+      pageInfo += "<img src='" + frontImage.src + "' onmouseover='rolloverDefault(this)' onmouseout='mouseawayDefault(this)' class='pokesprite'>";
+      pageInfo += "<img src='" + shinyFrontImage.src + "' onmouseover='rolloverShiny(this)' onmouseout='mouseawayShiny(this)' class='pokesprite'>";
+
+      pageInfo += "<ul>";
+      pageInfo += "<li>" + json.name + "</li>";
+
+      pageInfo += "<div>" + json.types[0].type.name;
+      if(json.types.length == 2){
+          pageInfo += " " + json.types[1].type.name;
+      }
+      pageInfo += "</div>";
+
+      var idLength = json.id.toString().length;
+      idLength = 5 - idLength;
+      var id = json.id.toString();
+      for(var i = 0; i < idLength; i++){
+        id = id.replace (/^/,'0');
+      }
+      pageInfo += "<li> ID: " + id + "</li>";
+      pageInfo += "<li> Height: " + json.height + " Weight: " + json.weight + "</li>";
+      pageInfo += "<li> Base exp: " + json.base_experience+ "</li>";
+      pageInfo += "</ul>";
+
+      pageInfo += "<div class='abilities'> Abilities: </div>";
+      for(var i = 0; i < json.abilities.length; i++) {
+        pageInfo += "<div class='abilities'>" + json.abilities[i].ability.name;
+        if(json.abilities[i].is_hidden){
+          pageInfo += " - Hidden";
+        }
+        pageInfo += "</div>";
+      }
+
+      updateRightSideBar(pageInfo);
+}
+
+function mainMoves(json) {
+      // update DOM with response
+      let pageInfo = "<p id='images'></p>";
+
+      pageInfo += "<p id='images'></p>";
+
+      frontImage.src = json.sprites.front_default;
+      backImage.src = json.sprites.back_default;
+      shinyFrontImage.src = json.sprites.front_shiny;
+      shinyBackImage.src = json.sprites.back_shiny;
+
+      pageInfo += "<img src='" + frontImage.src + "' onmouseover='rolloverDefault(this)' onmouseout='mouseawayDefault(this)' class='pokesprite'>";
+      pageInfo += "<img src='" + shinyFrontImage.src + "' onmouseover='rolloverShiny(this)' onmouseout='mouseawayShiny(this)' class='pokesprite'>";
+
+      pageInfo += "<ul>";
       pageInfo += "<li>" + json.name + "</li>";
       pageInfo += "</ul>";
-      pageInfo += "<ul> Stats";
+      pageInfo += "<ul> Stats:";
       for(var i = 0; i < json.stats.length; i++){
         pageInfo += "<li>" + json.stats[i].base_stat + " " +json.stats[i].stat.name + "</li>";
       }
       pageInfo += "</ul>";
       updateRightSideBar(pageInfo);
+}
 
-      pageInfo = "<div class='subParent'>";
+function loadMoves(json){
+  var pageInfo = "<div class='subParent'>";
+  pageInfo += "<div class='headerLeft'>Moves:</div>" + "<div class='headerRight'>Learn method:</div>";
+  let moveSet = json.moves;
+  for(var i = 0; i < moveSet.length; i++) {
+    pageInfo += "<div class='section red'>" + moveSet[i].move.name + "</div>";
 
+    pageInfo +=  "<div class='section purple'>" + moveSet[i].version_group_details[0].move_learn_method.name;
+    if(moveSet[i].version_group_details[0].move_learn_method.name == "level-up"){
+      pageInfo += " at  " + moveSet[i].version_group_details[0].level_learned_at;
+    }
+    pageInfo += "</div>";
 
-      if(type === "moves"){
-        let moveSet = json.moves;
-        for(var i = 0; i < moveSet.length; i++) {
-          pageInfo += "<div class='section yellow'>" + moveSet[i].move.name + "</div>";
+  }
+  pageInfo += "</div>";
+  updateMain(pageInfo);
+}
 
-          pageInfo += "<div class='section purple'>" + moveSet[i].version_group_details[0].level_learned_at;
-          pageInfo += "<span class='tab'></span>";
-          pageInfo +=  moveSet[i].version_group_details[0].move_learn_method.name + "</div>";
-        }
-      }
+function loadInfo(json){
+  var pageInfo = "<p class='header'> Games that have " + json.name + "</p>";
+  pageInfo += "<div class='subParent'>";
+  for(var i = 0; i < (json.game_indices.length - 1); i+=2) {
+    pageInfo += "<div class='section red'>" + json.game_indices[i].version.name + "</div>";
+    pageInfo += "<div class='section purple'>" + json.game_indices[i + 1].version.name + "</div>";
+  }
+  if(json.game_indices.length%2 == 1){ //if odd then the last one will be left off (9/2=4)
+    pageInfo += "<div class='section red'>" + json.game_indices[json.game_indices.length - 1].version.name + "</div>";
+  }
 
-
-      if(type === "info"){
-        pageInfo += "<div class='section yellow'>" + json.base_experience + "</div>";
-        pageInfo += "<div class='section purple'></div>";
-
-        pageInfo += "<div class='section yellow'>" + json.types[0].type.name + "</div>";
-        if(json.types.length == 2){
-            pageInfo += "<div class='section purple'>" + json.types[1].type.name + "</div>";
-        }
-        else{
-          pageInfo += "<div class='section purple'></div>";
-        }
-        for(var i = 0; i < json.abilities.length; i++) {
-          pageInfo += "<div class='section yellow'>" + json.abilities[i].ability.name + "</div>";
-          pageInfo += "<div class='section purple'>" + json.abilities[i].is_hidden + "</div>";
-        }
-        for(var i = 0; i < json.game_indices.length; i++) {
-          pageInfo += "<div class='section yellow'>" + json.game_indices[i].version.name + "</div>";
-          pageInfo += "<div class='section purple'>" + "</div>";
-        }
-      }
-
-
-      pageInfo += "</div>";
-      updateMain(pageInfo);
-
-
-    });
+  pageInfo += "</div>";
+  updateMain(pageInfo);
 }
 
 function mouseawayDefault(my_image){
@@ -116,5 +166,17 @@ function updateMain(info) {
 }
 
 
-// document.getElementById('searchButton').addEventListener('click', onClick);
-document.getElementById('searchButton').addEventListener('click', onClick);
+// // // document.getElementById('searchButton').addEventListener('click', onClick);
+
+document.getElementById('searchButton').addEventListener('click', function(event){
+    event.preventDefault();
+    getAPI(this.getAttribute("value"));
+});
+document.getElementById('infoButton').addEventListener('click', function(event){
+    event.preventDefault();
+    getAPI(this.getAttribute("value"));
+});
+document.getElementById('moveButton').addEventListener('click', function(event){
+    event.preventDefault();
+    getAPI(this.getAttribute("value"));
+});
